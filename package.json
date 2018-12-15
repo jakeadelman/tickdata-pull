@@ -1,0 +1,22 @@
+{
+  "name": "graphql-fetch",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "csv-writer": "^1.2.0",
+    "file-system": "^2.2.2",
+    "graphql-request": "^1.8.2",
+    "node-fetch": "^2.3.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.3",
+    "babel-preset-env": "^1.7.0",
+    "dateformat": "^3.0.3",
+    "nodemon": "^1.18.9"
+  },
+  "scripts": {
+    "start": "babel-node hourly_quote_fetch.js"
+  }
+}
