@@ -17,6 +17,7 @@ export const getTickQuery = `
             timestamp
             hour
             symbol
+            side
             size
             price
             tickDirection
