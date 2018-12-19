@@ -6,14 +6,36 @@
         {
             "label": "startit",
             "type": "shell",
-            "command": "npm start 18121400 XBTUSD 2",
+            "command": "npm start 18121401 XBTUSD 8",
             "problemMatcher": [],
             // "args": [
             //     "18121400",
             //     "XBTUSD",
             //     "2"
             // ]
-        }
+        },
+        {
+            "label": "merge",
+            "type": "shell",
+            "command": "npm run merge 18121401 2",
+            "problemMatcher": [],
+            // "args": [
+            //     "18121400",
+            //     "XBTUSD",
+            //     "2"
+            // ]
+        },
+        {
+            "label": "python-merge",
+            "type": "shell",
+            "command": "python merge.py",
+            "problemMatcher": [],
+            // "args": [
+            //     "18121400",
+            //     "XBTUSD",
+            //     "2"
+            // ]
+        },
     ],
     "runOptions": {
         "rerunBehaviour": "useEvaluated"
