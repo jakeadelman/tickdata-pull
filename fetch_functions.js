@@ -19,7 +19,7 @@ export const fetchHours = async (hour, symbol) => {
         console.log('created dir for hour' + hour.toString())
     })
 
-    // create write file
+    // create csv write file
     fs.writeFile('files/' + hour.toString() + '/quotes.csv', "hi", (err) => {
         if (err) {
             return console.log(err);
@@ -37,9 +37,7 @@ export const fetchHours = async (hour, symbol) => {
         .then((res) => res.json())
         .then(body => {
 
-
-
-
+            // create csv column labels
             var csvWriter = createCsvWriter({
                 path: 'files/' + hour.toString() + '/quotes.csv',
                 header: [
@@ -57,8 +55,8 @@ export const fetchHours = async (hour, symbol) => {
             })
             var fullRecs = [];
 
+            // push each quote to array
             body.data.quote.map((res) => {
-
 
                 var midPrice = (res.askPrice + res.bidPrice) / 2
                 var microPrice = (((res.askPrice * res.bidSize) + (res.askPrice * res.askSize)) / (res.bidSize + res.askSize))
@@ -71,6 +69,8 @@ export const fetchHours = async (hour, symbol) => {
 
             })
 
+
+            //write records to csv file
             csvWriter.writeRecords(fullRecs)
                 .then(() => {
                     console.log('wrote records')
