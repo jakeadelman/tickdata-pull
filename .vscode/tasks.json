@@ -2,8 +2,7 @@
     // See https://go.microsoft.com/fwlink/?LinkId=733558
     // for the documentation about the tasks.json format
     "version": "2.0.0",
-    "tasks": [
-        {
+    "tasks": [{
             "label": "startit",
             "type": "shell",
             "command": "npm start 18121401 XBTUSD 8",
@@ -28,7 +27,7 @@
         {
             "label": "python-merge",
             "type": "shell",
-            "command": "python merge.py",
+            "command": "python ./python/merge.py",
             "problemMatcher": [],
             // "args": [
             //     "18121400",
