@@ -1,10 +1,12 @@
-import {getQuoteQuery, getTickQuery} from '../queries';
+import {getQuoteQuery, getTickQuery} from '../queries'
 
-const fetch = require('node-fetch');
-const createCsvWriter = require('csv-writer').createObjectCsvWriter;
+const fetch = require('node-fetch')
+const createCsvWriter = require('csv-writer').createObjectCsvWriter
 
-var dateFormat = require('dateformat');
-var fs = require('file-system');
+const format = require('date-format')
+
+var dateFormat = require('dateformat')
+var fs = require('file-system')
 
 /* fetchHours function || fetches quote from graphql endpoint
   args: (hour: <string>, symbol: <string>) */
@@ -12,91 +14,102 @@ var fs = require('file-system');
 export const fetchHours = async (hour, symbol) => {
   var variables = {
     hour: hour,
-    symbol: symbol,
-  };
+    symbol: symbol
+  }
 
-  var query = getQuoteQuery;
-  fs.mkdir('../files/' + hour.toString(), () => {
-    console.log('created dir for hour' + hour.toString());
-  });
+  var query = getQuoteQuery
+  fs.mkdir('files/' + hour.toString(), () => {
+    console.log('created dir for hour' + hour.toString())
+  })
 
   // create csv write file
-  fs.writeFile('../files/' + hour.toString() + '/quotes.csv', 'hi', err => {
+  fs.writeFile('files/' + hour.toString() + '/quotes.csv', 'hi', err => {
     if (err) {
-      return console.log(err);
+      return console.log(err)
     }
-    console.log('created write file');
-  });
+    console.log('created write file')
+  })
 
   await fetch('http://139.59.181.241:4000/', {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/json'
     },
     body: JSON.stringify({
       query,
-      variables,
-    }),
+      variables
+    })
   })
     .then(res => res.json())
     .then(body => {
       // create csv column labels
       var csvWriter = createCsvWriter({
-        path: '../files/' + hour.toString() + '/quotes.csv',
+        path: 'files/' + hour.toString() + '/quotes.csv',
         header: [
           {
-            id: 'timestamp',
-            title: 'timestamp',
+            id: 'id',
+            title: 'id'
           },
           {
-            id: 'reformattedDate',
-            title: 'reformattedDate',
+            id: 'timestamp',
+            title: 'timestamp'
+          },
+          {
+            id: 'secondTime',
+            title: 'secondTime'
           },
           {
             id: 'hour',
-            title: 'hour',
+            title: 'hour'
           },
           {
             id: 'symbol',
-            title: 'symbol',
+            title: 'symbol'
           },
           {
             id: 'bidPrice',
-            title: 'bidPrice',
+            title: 'bidPrice'
           },
           {
             id: 'bidSize',
-            title: 'bidSize',
+            title: 'bidSize'
           },
           {
             id: 'askPrice',
-            title: 'askPrice',
+            title: 'askPrice'
           },
           {
             id: 'askSize',
-            title: 'askSize',
+            title: 'askSize'
           },
           {
             id: 'midPrice',
-            title: 'midPrice',
+            title: 'midPrice'
           },
           {
             id: 'microPrice',
-            title: 'microPrice',
-          },
-        ],
-      });
-      var fullRecs = [];
+            title: 'microPrice'
+          }
+        ]
+      })
+      var fullRecs = []
 
       // push each quote to array
       body.data.quote.map(res => {
-        var midPrice = (res.askPrice + res.bidPrice) / 2;
+        var midPrice = (res.askPrice + res.bidPrice) / 2
         var microPrice =
-          (res.askPrice * res.bidSize + res.askPrice * res.askSize) / (res.bidSize + res.askSize);
-        var reformattedDate = dateFormat(res.datetime, 'yymmddHHMMssl');
+          (res.askPrice * res.bidSize + res.askPrice * res.askSize) /
+          (res.bidSize + res.askSize)
+
+        var times = res.timestamp
+        var times = times.replace(/-/g, ' ')
+        var secondTime = format.parse(format.DATETIME_FORMAT, times)
+
+        var secondTime = dateFormat(secondTime, 'yymmddHHMMss')
         var records = {
+          id: res.id,
           timestamp: res.timestamp,
-          reformattedDate: reformattedDate,
+          secondTime: secondTime.toString(),
           hour: hour,
           symbol: res.symbol,
           bidPrice: res.bidPrice.toString(),
@@ -104,130 +117,131 @@ export const fetchHours = async (hour, symbol) => {
           askPrice: res.askPrice.toString(),
           askSize: res.askSize.toString(),
           midPrice: midPrice.toString(),
-          microPrice: microPrice.toString(),
-        };
-        fullRecs.push(records);
-      });
+          microPrice: microPrice.toString()
+        }
+        fullRecs.push(records)
+      })
 
       //write records to csv file
       csvWriter
         .writeRecords(fullRecs)
         .then(() => {
-          console.log('wrote records');
+          console.log('wrote records')
         })
-        .catch(err => console.log(err));
+        .catch(err => console.log(err))
     })
-    .catch(e => console.log(e));
-};
+    .catch(e => console.log(e))
+}
 
-export const fetchTicks = async (hour, symbol) => {
-  var variables = {
-    hour: hour,
-    symbol: symbol,
-  };
-  var query = getTickQuery;
+// export const fetchTicks = async (hour, symbol) => {
+//   var variables = {
+//     hour: hour,
+//     symbol: symbol
+//   }
+//   var query = getTickQuery
 
-  fs.writeFile('../files/' + hour.toString() + '/ticks.csv', 'hi', err => {
-    if (err) {
-      return console.log(err);
-    }
-    console.log('created write file for ticks');
-  });
+//   fs.writeFile('../files/' + hour.toString() + '/ticks.csv', 'hi', err => {
+//     if (err) {
+//       return console.log(err)
+//     }
+//     console.log('created write file for ticks')
+//   })
 
-  await fetch('http://139.59.181.241:4000/', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      query,
-      variables,
-    }),
-  })
-    .then(res => res.json())
-    .then(body => {
-      var csvWriter2 = createCsvWriter({
-        path: '../files/' + hour.toString() + '/ticks.csv',
-        header: [
-          {
-            id: 'timestamp',
-            title: 'timestamp',
-          },
-          {
-            id: 'reformattedDate',
-            title: 'reformattedDate',
-          },
-          {
-            id: 'hour',
-            title: 'hour',
-          },
-          {
-            id: 'symbol',
-            title: 'symbol',
-          },
-          {
-            id: 'side',
-            title: 'side',
-          },
-          {
-            id: 'size',
-            title: 'size',
-          },
-          {
-            id: 'price',
-            title: 'price',
-          },
-          {
-            id: 'tickDirection',
-            title: 'tickDirection',
-          },
-          {
-            id: 'trdMatchID',
-            title: 'trdMatchID',
-          },
-          {
-            id: 'volTime',
-            title: 'volTime',
-          },
-          {
-            id: 'tickTime',
-            title: 'tickTime',
-          },
-        ],
-      });
-      var fullRecs = [];
-      var volTime = 0;
-      var tickTime = 0;
+//   await fetch('http://139.59.181.241:4000/', {
+//     method: 'POST',
+//     headers: {
+//       'Content-Type': 'application/json'
+//     },
+//     body: JSON.stringify({
+//       query,
+//       variables
+//     })
+//   })
+//     .then(res => res.json())
+//     .then(body => {
+//       var csvWriter2 = createCsvWriter({
+//         path: '../files/' + hour.toString() + '/ticks.csv',
+//         header: [
+//           {
+//             id: 'timestamp',
+//             title: 'timestamp'
+//           },
+//           {
+//             id: 'reformattedDate',
+//             title: 'reformattedDate'
+//           },
+//           {
+//             id: 'hour',
+//             title: 'hour'
+//           },
+//           {
+//             id: 'symbol',
+//             title: 'symbol'
+//           },
+//           {
+//             id: 'side',
+//             title: 'side'
+//           },
+//           {
+//             id: 'size',
+//             title: 'size'
+//           },
+//           {
+//             id: 'price',
+//             title: 'price'
+//           },
+//           {
+//             id: 'tickDirection',
+//             title: 'tickDirection'
+//           },
+//           {
+//             id: 'trdMatchID',
+//             title: 'trdMatchID'
+//           },
+//           {
+//             id: 'volTime',
+//             title: 'volTime'
+//           },
+//           {
+//             id: 'tickTime',
+//             title: 'tickTime'
+//           }
+//         ]
+//       })
+//       var fullRecs = []
+//       var volTime = 0
+//       var tickTime = 0
 
-      body.data.tick.map(res => {
-        volTime += res.size;
-        tickTime += 1;
-        var midPrice = (res.askPrice + res.bidPrice) / 2;
-        var microPrice =
-          (res.askPrice * res.bidSize + res.askPrice * res.askSize) / (res.bidSize + res.askSize);
-        var reformattedDate = dateFormat(res.datetime, 'yymmddHHMMssl');
-        var records = {
-          timestamp: res.timestamp,
-          reformattedDate: reformattedDate,
-          hour: hour,
-          symbol: res.symbol,
-          side: res.side,
-          size: res.size.toString(),
-          price: res.price.toString(),
-          tickDirection: res.tickDirection,
-          trdMatchID: res.trdMatchID,
-          volTime: volTime.toString(),
-          tickTime: tickTime.toString(),
-        };
-        fullRecs.push(records);
-      });
+//       body.data.tick.map(res => {
+//         volTime += res.size
+//         tickTime += 1
+//         var midPrice = (res.askPrice + res.bidPrice) / 2
+//         var microPrice =
+//           (res.askPrice * res.bidSize + res.askPrice * res.askSize) /
+//           (res.bidSize + res.askSize)
+//         var reformattedDate = dateFormat(res.datetime, 'yymmddHHMMssl')
+//         var records = {
+//           timestamp: res.timestamp,
+//           reformattedDate: reformattedDate,
+//           hour: hour,
+//           symbol: res.symbol,
+//           side: res.side,
+//           size: res.size.toString(),
+//           price: res.price.toString(),
+//           tickDirection: res.tickDirection,
+//           trdMatchID: res.trdMatchID,
+//           volTime: volTime.toString(),
+//           tickTime: tickTime.toString()
+//         }
+//         fullRecs.push(records)
+//       })
 
-      csvWriter2
-        .writeRecords(fullRecs)
-        .then(() => {
-          console.log('wrote tick records');
-        })
-        .catch(err => console.log(err));
-    })
-    .catch(e => console.log(e));
-};
+//       csvWriter2
+//         .writeRecords(fullRecs)
+//         .then(() => {
+//           console.log('wrote tick records')
+//         })
+//         .catch(err => console.log(err))
+//     })
+//     .catch(e => console.log(e))
+// }

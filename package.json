@@ -5,6 +5,7 @@
   "license": "MIT",
   "dependencies": {
     "csv-writer": "^1.2.0",
+    "date-format": "^2.0.0",
     "file-system": "^2.2.2",
     "graphql-request": "^1.8.2",
     "node-fetch": "^2.3.0"
@@ -18,7 +19,7 @@
     "nodemon": "^1.18.9"
   },
   "scripts": {
-    "start": "babel-node hourlyQuoteFetch.js",
-    "merge": "babel-node mergeQuotes.js"
+    "start": "babel-node ./js/hourlyQuoteFetch.js",
+    "merge": "babel-node ./js/mergeQuotes.js"
   }
 }

@@ -1,6 +1,7 @@
 export const getQuoteQuery = `
       query quote($hour: String!, $symbol: String!){
         quote(hour:$hour, symbol: $symbol){
+            id
             timestamp
             symbol
             bidPrice
@@ -14,6 +15,7 @@ export const getQuoteQuery = `
 export const getTickQuery = `
       query tick($hour: String!, $symbol: String!){
         tick(hour:$hour, symbol: $symbol){
+            id
             timestamp
             hour
             symbol

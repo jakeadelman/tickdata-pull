@@ -1,42 +1,34 @@
 {
-    // See https://go.microsoft.com/fwlink/?LinkId=733558
-    // for the documentation about the tasks.json format
-    "version": "2.0.0",
-    "tasks": [{
-            "label": "startit",
-            "type": "shell",
-            "command": "npm start 18121401 XBTUSD 8",
-            "problemMatcher": [],
-            // "args": [
-            //     "18121400",
-            //     "XBTUSD",
-            //     "2"
-            // ]
-        },
-        {
-            "label": "merge",
-            "type": "shell",
-            "command": "npm run merge 18121401 2",
-            "problemMatcher": [],
-            // "args": [
-            //     "18121400",
-            //     "XBTUSD",
-            //     "2"
-            // ]
-        },
-        {
-            "label": "python-merge",
-            "type": "shell",
-            "command": "python ./python/merge.py",
-            "problemMatcher": [],
-            // "args": [
-            //     "18121400",
-            //     "XBTUSD",
-            //     "2"
-            // ]
-        },
-    ],
-    "runOptions": {
-        "rerunBehaviour": "useEvaluated"
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "startit",
+      "type": "shell",
+      "command": "yarn start 18121909 XBTUSD 2",
+      "problemMatcher": []
+    },
+    {
+      "label": "merge",
+      "type": "shell",
+      "command": "npm run merge 18121401 2",
+      "problemMatcher": []
+    },
+    {
+      "label": "python-merge",
+      "type": "shell",
+      "command": "python ./python/merge.py",
+      "problemMatcher": []
+    },
+    {
+      "label": "python-compress",
+      "type": "shell",
+      "command": "python ./python/compress_secs.py",
+      "problemMatcher": []
     }
+  ],
+  "runOptions": {
+    "rerunBehaviour": "useEvaluated"
+  }
 }
