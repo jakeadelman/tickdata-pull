@@ -1,9 +1,14 @@
 import pandas as pd
+import sys
 
 # Set variables
-hour = 18121909
-path = "merged_files/" + hour + "_4h_final.csv"
-new_path = "merged_files/" + hour + "_4h_perc.csv"
+hour = sys.argv[1]
+hours = sys.argv[2]
+
+print(args)
+
+path = "merged_files/" + str(hour) + "_" + str(hours) + "h_final.csv"
+new_path = "merged_files/" + str(hour) + "_" + str(hours) + "h_perc.csv"
 
 # Read df
 df = pd.read_csv(path)
@@ -13,6 +18,7 @@ def percentage_gain(df, new_path):
 
     new_path = new_path
     the_range = len(df["id"])
+    print("the range is :: ", the_range)
 
     new_df = pd.DataFrame(
         columns=[
@@ -56,7 +62,8 @@ def percentage_gain(df, new_path):
             variables["returnsOpenPrevMicro10"] = 0
             variables["returnsClosePrevMicro10"] = 0
 
-            new_df.append(variables, ignore_index=True)
+            new_df = new_df.append(variables, ignore_index=True)
+            print(new_df)
             count += 1
 
         if count > 0 and count < 10:
@@ -89,6 +96,10 @@ def percentage_gain(df, new_path):
             variables["returnsClosePrevMid10"] = 0
             variables["returnsOpenPrevMicro10"] = 0
             variables["returnsClosePrevMicro10"] = 0
+
+            new_df = new_df.append(variables, ignore_index=True)
+            print(new_df)
+            count += 1
 
         if count >= 10:
             last_row = new_df.iloc[-1, :]
@@ -133,7 +144,11 @@ def percentage_gain(df, new_path):
             variables["returnsOpenPrevMicro10"] = ret_open_micro_10
             variables["returnsClosePrevMicro10"] = ret_close_micro_10
 
-    df.to_csv(new_path)
+            new_df = new_df.append(variables, ignore_index=True)
+            print(new_df)
+            count += 1
+
+    new_df.to_csv(new_path, float_format="%.6f")
     print("done")
 
 

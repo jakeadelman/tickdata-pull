@@ -1,9 +1,11 @@
 import pandas as pd
 import numpy as np
+import sys
 
 # set hour and get file location
-hour = 18121909
-loco = "merged_files/" + str(hour) + "_4h.csv"
+hour = sys.argv[1]
+hours = sys.argv[2]
+loco = "merged_files/" + str(hour) + "_" + str(hours) + "h.csv"
 
 # read file into df
 df = pd.read_csv(loco)
