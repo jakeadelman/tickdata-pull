@@ -8,7 +8,7 @@ const format = require('date-format')
 var dateFormat = require('dateformat')
 var fs = require('file-system')
 
-/* fetchHours function || fetches quote from graphql endpoint
+/* fetchHours function || fetches quotes from graphql endpoint
   args: (hour: <string>, symbol: <string>) */
 
 export const fetchHours = async (hour, symbol) => {
@@ -133,115 +133,120 @@ export const fetchHours = async (hour, symbol) => {
     .catch(e => console.log(e))
 }
 
-// export const fetchTicks = async (hour, symbol) => {
-//   var variables = {
-//     hour: hour,
-//     symbol: symbol
-//   }
-//   var query = getTickQuery
+/* fetchTicks function || fetches ticks from graphql endpoint
+  args: (hour: <string>, symbol: <string>) */
 
-//   fs.writeFile('../files/' + hour.toString() + '/ticks.csv', 'hi', err => {
-//     if (err) {
-//       return console.log(err)
-//     }
-//     console.log('created write file for ticks')
-//   })
+export const fetchTicks = async (hour, symbol) => {
+  var variables = {
+    hour: hour,
+    symbol: symbol
+  }
+  var query = getTickQuery
 
-//   await fetch('http://139.59.181.241:4000/', {
-//     method: 'POST',
-//     headers: {
-//       'Content-Type': 'application/json'
-//     },
-//     body: JSON.stringify({
-//       query,
-//       variables
-//     })
-//   })
-//     .then(res => res.json())
-//     .then(body => {
-//       var csvWriter2 = createCsvWriter({
-//         path: '../files/' + hour.toString() + '/ticks.csv',
-//         header: [
-//           {
-//             id: 'timestamp',
-//             title: 'timestamp'
-//           },
-//           {
-//             id: 'reformattedDate',
-//             title: 'reformattedDate'
-//           },
-//           {
-//             id: 'hour',
-//             title: 'hour'
-//           },
-//           {
-//             id: 'symbol',
-//             title: 'symbol'
-//           },
-//           {
-//             id: 'side',
-//             title: 'side'
-//           },
-//           {
-//             id: 'size',
-//             title: 'size'
-//           },
-//           {
-//             id: 'price',
-//             title: 'price'
-//           },
-//           {
-//             id: 'tickDirection',
-//             title: 'tickDirection'
-//           },
-//           {
-//             id: 'trdMatchID',
-//             title: 'trdMatchID'
-//           },
-//           {
-//             id: 'volTime',
-//             title: 'volTime'
-//           },
-//           {
-//             id: 'tickTime',
-//             title: 'tickTime'
-//           }
-//         ]
-//       })
-//       var fullRecs = []
-//       var volTime = 0
-//       var tickTime = 0
+  fs.writeFile('../files/' + hour.toString() + '/ticks.csv', 'hi', err => {
+    if (err) {
+      return console.log(err)
+    }
+    console.log('created write file for ticks')
+  })
 
-//       body.data.tick.map(res => {
-//         volTime += res.size
-//         tickTime += 1
-//         var midPrice = (res.askPrice + res.bidPrice) / 2
-//         var microPrice =
-//           (res.askPrice * res.bidSize + res.askPrice * res.askSize) /
-//           (res.bidSize + res.askSize)
-//         var reformattedDate = dateFormat(res.datetime, 'yymmddHHMMssl')
-//         var records = {
-//           timestamp: res.timestamp,
-//           reformattedDate: reformattedDate,
-//           hour: hour,
-//           symbol: res.symbol,
-//           side: res.side,
-//           size: res.size.toString(),
-//           price: res.price.toString(),
-//           tickDirection: res.tickDirection,
-//           trdMatchID: res.trdMatchID,
-//           volTime: volTime.toString(),
-//           tickTime: tickTime.toString()
-//         }
-//         fullRecs.push(records)
-//       })
+  await fetch('http://139.59.181.241:4000/', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      query,
+      variables
+    })
+  })
+    .then(res => res.json())
+    .then(body => {
+      var csvWriter2 = createCsvWriter({
+        path: '../files/' + hour.toString() + '/ticks.csv',
+        header: [
+          {
+            id: 'timestamp',
+            title: 'timestamp'
+          },
+          {
+            id: 'secondTime',
+            title: 'secondTime'
+          },
+          {
+            id: 'hour',
+            title: 'hour'
+          },
+          {
+            id: 'symbol',
+            title: 'symbol'
+          },
+          {
+            id: 'side',
+            title: 'side'
+          },
+          {
+            id: 'size',
+            title: 'size'
+          },
+          {
+            id: 'price',
+            title: 'price'
+          },
+          {
+            id: 'tickDirection',
+            title: 'tickDirection'
+          },
+          {
+            id: 'trdMatchID',
+            title: 'trdMatchID'
+          },
+          {
+            id: 'volTime',
+            title: 'volTime'
+          },
+          {
+            id: 'tickTime',
+            title: 'tickTime'
+          }
+        ]
+      })
+      var fullRecs = []
+      var volTime = 0
+      var tickTime = 0
 
-//       csvWriter2
-//         .writeRecords(fullRecs)
-//         .then(() => {
-//           console.log('wrote tick records')
-//         })
-//         .catch(err => console.log(err))
-//     })
-//     .catch(e => console.log(e))
-// }
+      console.log(body)
+
+      body.data.tick.map(res => {
+        volTime += res.size
+        tickTime += 1
+        var midPrice = (res.askPrice + res.bidPrice) / 2
+        var microPrice =
+          (res.askPrice * res.bidSize + res.askPrice * res.askSize) /
+          (res.bidSize + res.askSize)
+        var secondTime = dateFormat(res.datetime, 'yymmddHHMMssl')
+        var records = {
+          timestamp: res.timestamp,
+          secondTime: secondTime,
+          hour: hour,
+          symbol: res.symbol,
+          side: res.side,
+          size: res.size.toString(),
+          price: res.price.toString(),
+          tickDirection: res.tickDirection,
+          trdMatchID: res.trdMatchID,
+          volTime: volTime.toString(),
+          tickTime: tickTime.toString()
+        }
+        fullRecs.push(records)
+      })
+
+      csvWriter2
+        .writeRecords(fullRecs)
+        .then(() => {
+          console.log('wrote tick records')
+        })
+        .catch(err => console.log(err))
+    })
+    .catch(e => console.log(e))
+}

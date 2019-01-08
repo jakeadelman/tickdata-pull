@@ -10,7 +10,7 @@ console.log(hour, hoursPlus)
 
 let fetchRicks = (hour, symbol) => {
   fetchHours(hour, symbol)
-  // fetchTicks(hour, symbol);
+  fetchTicks(hour, symbol)
 }
 
 for (var i = parseInt(hour); i < hoursPlus; i++) {

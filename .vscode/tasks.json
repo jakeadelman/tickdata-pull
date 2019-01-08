@@ -4,15 +4,15 @@
   "version": "2.0.0",
   "options": {
     "env": {
-      "set1": "18122105 XBTUSD 2",
-      "set2": "18122105 2"
+      "set1": "18122105 XBTUSD 12",
+      "set2": "18122105 12"
     }
   },
   "tasks": [
     {
       "label": "startit",
       "type": "shell",
-      "command": "yarn start 18122105 XBTUSD 2",
+      "command": "yarn start 18122500 XBTUSD 24",
       "problemMatcher": []
     },
     // {
@@ -24,19 +24,19 @@
     {
       "label": "python-merge",
       "type": "shell",
-      "command": "python ./python/merge.py 18122105 2",
+      "command": "python ./python/merge.py 18122500 24",
       "problemMatcher": []
     },
     {
       "label": "python-compress",
       "type": "shell",
-      "command": "python ./python/compress_secs.py 18122105 2",
+      "command": "python ./python/compress_secs.py 18122500 24",
       "problemMatcher": []
     },
     {
       "label": "python-get-percentage",
       "type": "shell",
-      "command": "python ./python/percentage.py 18122105 2",
+      "command": "python ./python/percentage.py 18122500 24",
       "problemMatcher": []
     }
   ],
