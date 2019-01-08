@@ -17,7 +17,6 @@ export const fetchHours = async (hour, symbol) => {
     symbol: symbol
   }
 
-  var query = getQuoteQuery
   fs.mkdir('files/' + hour.toString(), () => {
     console.log('created dir for hour' + hour.toString())
   })
@@ -30,14 +29,14 @@ export const fetchHours = async (hour, symbol) => {
     console.log('created write file')
   })
 
-  await fetch('http://139.59.181.241:4000/', {
+  await fetch('http://192.168.1.154:4002/', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      query,
-      variables
+      query: getQuoteQuery,
+      variables: variables
     })
   })
     .then(res => res.json())
@@ -53,10 +52,6 @@ export const fetchHours = async (hour, symbol) => {
           {
             id: 'timestamp',
             title: 'timestamp'
-          },
-          {
-            id: 'secondTime',
-            title: 'secondTime'
           },
           {
             id: 'hour',
@@ -101,15 +96,14 @@ export const fetchHours = async (hour, symbol) => {
           (res.askPrice * res.bidSize + res.askPrice * res.askSize) /
           (res.bidSize + res.askSize)
 
-        var times = res.timestamp
-        var times = times.replace(/-/g, ' ')
-        var secondTime = format.parse(format.DATETIME_FORMAT, times)
+        // var times = res.timestamp
+        // var times = times.replace(/-/g, ':')
+        // var secondTime = format.parse(format.DATETIME_FORMAT, times)
 
-        var secondTime = dateFormat(secondTime, 'yymmddHHMMss')
+        // var secondTime = dateFormat(secondTime, 'yymmddHHMMss')
         var records = {
           id: res.id,
           timestamp: res.timestamp,
-          secondTime: secondTime.toString(),
           hour: hour,
           symbol: res.symbol,
           bidPrice: res.bidPrice.toString(),
@@ -137,41 +131,40 @@ export const fetchHours = async (hour, symbol) => {
   args: (hour: <string>, symbol: <string>) */
 
 export const fetchTicks = async (hour, symbol) => {
-  var variables = {
+  let variables = {
     hour: hour,
     symbol: symbol
   }
-  var query = getTickQuery
 
-  fs.writeFile('../files/' + hour.toString() + '/ticks.csv', 'hi', err => {
+  fs.writeFile('files/' + hour.toString() + '/ticks.csv', 'hi', err => {
     if (err) {
       return console.log(err)
     }
     console.log('created write file for ticks')
   })
 
-  await fetch('http://139.59.181.241:4000/', {
+  await fetch('http://192.168.1.154:4002/', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      query,
-      variables
+      query: getTickQuery,
+      variables: variables
     })
   })
     .then(res => res.json())
     .then(body => {
       var csvWriter2 = createCsvWriter({
-        path: '../files/' + hour.toString() + '/ticks.csv',
+        path: 'files/' + hour.toString() + '/ticks.csv',
         header: [
+          {
+            id: 'id',
+            title: 'id'
+          },
           {
             id: 'timestamp',
             title: 'timestamp'
-          },
-          {
-            id: 'secondTime',
-            title: 'secondTime'
           },
           {
             id: 'hour',
@@ -215,19 +208,17 @@ export const fetchTicks = async (hour, symbol) => {
       var volTime = 0
       var tickTime = 0
 
-      console.log(body)
-
       body.data.tick.map(res => {
         volTime += res.size
         tickTime += 1
-        var midPrice = (res.askPrice + res.bidPrice) / 2
-        var microPrice =
-          (res.askPrice * res.bidSize + res.askPrice * res.askSize) /
-          (res.bidSize + res.askSize)
-        var secondTime = dateFormat(res.datetime, 'yymmddHHMMssl')
+        // var midPrice = (res.askPrice + res.bidPrice) / 2
+        // var microPrice =
+        //   (res.askPrice * res.bidSize + res.askPrice * res.askSize) /
+        //   (res.bidSize + res.askSize)
+        // var secondTime = dateFormat(res.datetime, 'yymmddHHMMssl')
         var records = {
+          id: res.id.toString(),
           timestamp: res.timestamp,
-          secondTime: secondTime,
           hour: hour,
           symbol: res.symbol,
           side: res.side,

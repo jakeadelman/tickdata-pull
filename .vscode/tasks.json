@@ -12,7 +12,7 @@
     {
       "label": "startit",
       "type": "shell",
-      "command": "yarn start 18122500 XBTUSD 24",
+      "command": "yarn start 19010601 XBTUSD 24",
       "problemMatcher": []
     },
     // {
@@ -24,7 +24,7 @@
     {
       "label": "python-merge",
       "type": "shell",
-      "command": "python ./python/merge.py 18122500 24",
+      "command": "python ./python/format_ticks.py 19010601 1",
       "problemMatcher": []
     },
     {
